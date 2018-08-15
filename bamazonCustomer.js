@@ -45,20 +45,32 @@ inquirer
         message: "How many do you want?"
     }])
     .then(function(answer) {
-        console.log('Thanks for your purchase!');
-        var query = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE ?";
-      connection.query(query, [answer.amount, {item_id: answer.item}], 
-        function(err, res) {
-            var query = "SELECT item_id, product_name, price FROM products WHERE ?";
-            connection.query(query, [{item_id: answer.item}],
-            function(err, res) {
-            if (err) throw err;
-            for (var i = 0; i < res.length; i++) {
-            console.log(" || Item ID: " + res[i].item_id +
-                " || Product: " + res[i].product_name +
-                " || Price: " + res[i].price* parseFloat(answer.amount));}
-        connection.end()
+        var query = "SELECT item_id, product_name, stock_quantity FROM products WHERE ?"
+        connection.query(query, [{item_id: answer.item}],
+            function(err, res){
+            if (answer.item > res[0].stock_quantity){
+                console.log("Sorry, there's not enough of that product in our store.")
+                console.log("Here's what's left: ")
+                console.log(" || Item ID: " + res[0].item_id +
+                " || Product: " + res[0].product_name +
+                " || Current Stock: " + res[0].stock_quantity)
+                customerScreen();
+            }
+            else {
+            console.log('Thanks for your purchase!');
+            var query = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE ? AND stock_quantity > 0";
+            connection.query(query, [answer.amount, {item_id: answer.item}], 
+                function(err, res) {
+                var query = "SELECT item_id, product_name, price FROM products WHERE ?";
+                    connection.query(query, [{item_id: answer.item}],
+                    function(err, res) {
+                    if (err) throw err;
+                    console.log(" || Item ID: " + res[0].item_id +
+                    " || Product: " + res[0].product_name +
+                    " || Price: " + res[0].price* parseFloat(answer.amount));
+                connection.end()}
+                )}
+            )}
         })
     })
-})
 }
