@@ -48,7 +48,7 @@ inquirer
         var query = "SELECT item_id, product_name, stock_quantity FROM products WHERE ?"
         connection.query(query, [{item_id: answer.item}],
             function(err, res){
-            if (answer.item > res[0].stock_quantity){
+            if (answer.amount > res[0].stock_quantity){
                 console.log("Sorry, there's not enough of that product in our store.")
                 console.log("Here's what's left: ")
                 console.log(" || Item ID: " + res[0].item_id +
