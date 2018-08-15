@@ -49,13 +49,7 @@ inquirer
         var query = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE ?";
       connection.query(query, [answer.amount, {item_id: answer.item}], 
         function(err, res) {
-            confirm();
-        })
-    })
-}
-
-function confirm(){
-var query = "SELECT item_id, product_name, price FROM products WHERE ?";
+            var query = "SELECT item_id, product_name, price FROM products WHERE ?";
             connection.query(query, [{item_id: answer.item}],
             function(err, res) {
             if (err) throw err;
@@ -63,6 +57,8 @@ var query = "SELECT item_id, product_name, price FROM products WHERE ?";
             console.log(" || Item ID: " + res[i].item_id +
                 " || Product: " + res[i].product_name +
                 " || Price: " + res[i].price* parseFloat(answer.amount));}
-        connection.end();
-            })
+        connection.end()
+        })
+    })
+})
 }
