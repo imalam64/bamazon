@@ -68,7 +68,7 @@ inquirer
                     " || Product: " + res[0].product_name +
                     " || Price: $" + res[0].price +
                     " || Quantity: " + answer.amount +
-                    " || Total Price: $" + res[0].price* parseFloat(answer.amount));
+                    " || Total Price: $" + res[0].price * parseFloat(answer.amount));
                 connection.end()}
                 )}
             )}
