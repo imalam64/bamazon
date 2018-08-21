@@ -23,7 +23,8 @@ function managerScreen(){
         choices:["View Products For Sale",
         "View Low Inventory",
         "Add To Inventory",
-        "Add New Product"]
+        "Add New Product",
+        "Exit Manager"]
     }])
     .then(function(answer){
         if (answer.options === "View Products For Sale"){
@@ -38,26 +39,89 @@ function managerScreen(){
         else if (answer.options === "Add New Product"){
             addProduct();
         }
+        else if  (answer.options === "Exit Manager"){
+            console.log("Goodbye!");
+            connection.end();
+        }
     })
 }
 
 function viewProducts(){
-    console.log ("Here's what's in stock right now: ");
-    connection.end();
+    console.log ("Here's what's in the store right now: ");
+    connection.query("SELECT item_id, product_name, price, stock_quantity FROM products", function(err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+        console.log(
+            " || Item ID: " +
+            res[i].item_id +
+            " || Product: " +
+            res[i].product_name +
+            " || Price: " +
+            res[i].price +
+            " || Inventory: " +
+            res[i].stock_quantity);
+        }
+    managerScreen();
+    })
 }
 
 function viewLowInventory(){
     console.log ("Here's what's in low stock right now: ");
-    connection.end();
-
+    query = "SELECT item_id, product_name, stock_quantity FROM products WHERE stock_quantity <= 5"
+    connection.query( query, 
+    function(err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+        console.log(
+            " || Item ID: " +
+            res[i].item_id +
+            " || Product: " +
+            res[i].product_name +
+            " || Inventory: " +
+            res[i].stock_quantity);
+        }
+    managerScreen();
+    })
 }
 
 function updateInventory(){
     console.log("Ok, let's add more to the current stock!");
-    connection.end();
 }
 
 function addProduct(){
     console.log ("Ok, let's add a new product to the store!");
-    connection.end();
+    inquirer
+    .prompt([{
+        name: "prodName",
+        type: "input",
+        message: "What is the product name?"
+        },
+        {
+        name: "department",
+        type: "input",
+        message: "What department does it go to?"
+        },
+        {
+        name: "price",
+        type: "input",
+        message: "How much does it cost per unit?"
+        },
+        {
+        name: "inventory",
+        type: "input",
+        message: "How many units are being added to the inventory?"
+        }])
+    .then(function(answer) {
+    query = "INSERT INTO products SET ?"
+    connection.query( query, {product_name: answer.prodName, department_name: answer.department, 
+        price: answer.price, stock_quantity: answer.inventory},
+    function(err, res) {
+        if (err) throw err;
+        console.log("Great! We added " + answer.prodName + " to the store!");
+        console.log("It was placed in " + answer.department + ".");
+        console.log("The price is set at " + answer.price + ".");
+        console.log("The current stock is at " + answer.inventory + ".");
+        managerScreen();
+        })
+    })
 }

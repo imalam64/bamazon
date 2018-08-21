@@ -5,11 +5,11 @@ CREATE TABLE products(
   product_name VARCHAR(500) NOT NULL,
   department_name VARCHAR(500) NOT NULL,
   price FLOAT NOT NULL,
-  stock_quantity INTEGER(255),
+  stock_quantity INTEGER(255) NOT NULL,
   PRIMARY KEY (item_id)
 );
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
+INSERT INTO products (item_id, product_name, department_name, price, stock_quantity)
 VALUES ("Amazon Echo", "Tech", 99.99, 500), 
 ("Amazon Echo Dot", "Tech", 49.99, 500),
 ("Amazon Echo Plus", "Tech", 149.99, 500),
