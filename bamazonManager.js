@@ -85,7 +85,23 @@ function viewLowInventory(){
 }
 
 function updateInventory(){
-    console.log("Ok, let's add more to the current stock!");
+    console.log("Ok, let's update the current stock!");
+    inquirer
+    .prompt([
+        {name: "item",
+        type: "input",
+        message: "Which item is being added to? Please provide item ID."},
+        {name: "amount",
+        type: "input",
+        message: "What is the new amount?"}
+    ])
+    .then(function(answer){
+        query = "UPDATE products SET ? WHERE ?";
+        connection.query( query, [{stock_quantity: answer.amount}, {item_id: answer.item}], function(err, res){
+            console.log("Great, we just updated that item and added " + answer.amount + " more!")
+            managerScreen();
+        })
+    })
 }
 
 function addProduct(){
@@ -112,7 +128,7 @@ function addProduct(){
         message: "How many units are being added to the inventory?"
         }])
     .then(function(answer) {
-    query = "INSERT INTO products SET ?"
+    query = "INSERT INTO products SET ?";
     connection.query( query, {product_name: answer.prodName, department_name: answer.department, 
         price: answer.price, stock_quantity: answer.inventory},
     function(err, res) {
